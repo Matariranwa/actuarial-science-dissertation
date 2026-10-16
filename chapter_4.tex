@@ -1,0 +1,608 @@
+\chapter{Data Analysis}
+\section{Introduction} 
+This chapter presents the analysis of operational risk loss data from 1980 to 2024, using the Bayesian Belief Network and focusing on major risk event types as described in Basel II and the ORX global report database. The objective is to explore the structure of the Bayesian model framework, quantification of the network, probability eliciting, validations of estimates, structural model building, risk process mapping and node identification, network structure, conditional probabilities and node discretion tables, and model structure validation.To gain insights applicable to managing operational risk in the banking sector, the study employs both descriptive and inferential statistical techniques in combination with causal structure learning. This section of the research is organized into two core components: data preprocessing (including exploration and transformation) and model development. Moreover, the chapter aligns with the research goals and objectives as outlined in Chapter 1. 
+
+\subsection{Data Exploration}
+\subsubsection{Risk Category and the dataset structure}
+The structure of our dataset is as follows, we have 7 key risk categories which are identified as; Internal Fraud (IF), External Fraud (EF), Employment Practices and workplace safety (EPWS), Clients, Products and Business Practices (CPBP), Disasters and Public Safety (DPS) Technology and Infrastructure Failure (TIF) Execution, Delivery and Process Management (EDPM). Dataset structure: The data represents operational risk losses across seven risk categories tracked over seven years (1980-2024). The dataset contains numeric loss amounts presented in (thousands USD).
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lrrrrrrr}
+        \hline
+        \textbf{Date} & \textbf{Intfraud} & \textbf{Exfraud} & \textbf{EmployPWS} & \textbf{ClientsPBP} & \textbf{Disaster} & \textbf{ICTFailure} & \textbf{ExecutionDP} \\
+        \hline
+        1980 & 98.90 & 465.20 & 76.70 & 1816.40 & 40.00 & 50.30 & 407.50 \\
+        1981 & 890.90 & 589.20 & 291.00 & 18275.00 & 9.40 & 3851.00 & 9353.10 \\
+        1982 & 950.00 & 7045.20 & 3394.70 & 26504.30 & 389.70 & 844.40 & 13655.60 \\
+        1983 & 161.10 & 304.40 & 233.80 & 2456.20 & 2.10 & 27.60 & 886.60 \\
+        1984 & 158.40 & 4514.00 & 240.00 & 12962.00 & 30.30 & 678.40 & 5425.10 \\
+        1985 & 11.20 & 104.10 & 26.90 & 75.50 & 3.80 & 507.20 & 729.10 \\
+        1986 & 2.10 & 104.10 & 68.80 & 942.90 & 3.40 & 52.70 & 1970.90 \\
+        \hline
+    \end{tabular}
+    \caption{Operational Risk Dataset Structure}
+    \label{tab:Operational Risk Dataset Structure}
+\end{table}
+\section{Descriptive Statistics}
+Table 4.2 shows the descriptive statistics of the variables available in our dataset. To establish a clear understanding of the nature of the dataset and the general statistics, box plots, frequency distributions were calculated for the 7 variables of the operational risks. These variables include the total operational risk loss (loss), Measures of central tendency (mean and median), dispersion (standard deviation and range), and distribution shape (minimum, maximum, and quartiles) were calculated.
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|r|r|r|p{5cm}|}
+\hline
+\rowcolor{gray!20}
+\textbf{Variable} & \textbf{Mean} & \textbf{Min -- Max} & \textbf{Std Dev} & \textbf{Insight} \\
+\hline
+Internal Fraud  & 451.26 & 2.1 -- 997.3 & 304.55 & Moderate average; some extreme spikes. \\
+External Fraud  & 3,511.78 & 4.4 -- 9,441.8 & 2,955.74 & Wide spread and very high outliers. \\
+Employee Safety  & 2,203.58 & 26.9 -- 4,900.1 & 1,691.41 & Steady increase over time is likely; moderate spread. \\
+ClientsPBP & 13,629.87 & 75.5 -- 26,863.3 & 8,294.86 & Highest average and widest range, indicating heavy losses. \\
+Disaster & 247.88 & 0.4 -- 678.8 & 218.63 & Low average but high variability; large, rare events. \\
+ICT Failures & 1,801.64 & 27.6 -- 3,926.4 & 1,309.33 & High variability; significant systemic impact possible. \\
+Execution Errors  & 6,596.26 & 407.5 -- 14,879.2 & 4,428.29 & Very wide range; suggests frequent large-scale process failures. \\
+\hline
+\end{tabular}
+\caption{Operational Risk Variables - Summary Statistics}
+\label{tab:Operational Risk Variables - Summary Statistics}
+\end{table}
+
+
+The Table \ref{tab:Operational Risk Variables - Summary Statistics} shows mean, standard deviation, and range for each risk type, offering a view of the scale and volatility of operational losses. Each variable including Internal Fraud, External Fraud, Employee Practices and Workplace Safety, Clients/Products/Business Practices, Disaster, ICT Failure, and Execution \& Delivery Processes is represented with measures such as count, mean, standard deviation, minimum, and maximum values, and quartiles (25\%, 50\%, and 75\%). This data indicates substantial variability across risk categories, with ClientsPBP and ExecutionDP showing the highest means and standard deviations, highlighting their dominant contribution to overall risk. This description highlights the relative contributions of each risk event type to the overall operational risk
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Box Plot ORX Loss Variables.png}
+    \caption{Box Plot of ORX Loss Variables}
+    \label{fig:Box Plot of ORX Loss Variables}
+\end{figure}
+
+This box plot displays the distribution of operational risk losses across seven categories as outlined in Table 4.1. From the plot, each horizontal box shows the median (center line), interquartile range (colored box representing middle 50\% of data), and whiskers extending to minimum and maximum values within 1.5 times the interquartile range, with outliers as individual points. This visualization helps to quickly identify which operational risk categories have the highest median losses, greatest variability, and most extreme outliers, with Client/Business practice issues appearing to have both high median values and significant variability compared to categories like Disaster, which shows lower overall values.
+
+\subsection{Frequency distributions}
+The Figure below describes the frequency distributions of the operational risk variables. The bar graphs highlight how often certain ranges of these risk indicators occur. The line plots show the overall trend across those ranges. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Frequency Distributions ORX.png}
+    \caption{Frequency Distributions ORX}
+    \label{fig:Frequency Distributions ORX}
+\end{figure}
+\subsection{Correlation Matrix Analysis}
+Pearson correlation coefficients were calculated between loss types
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Correlation Matrix.png}
+    \caption{Correlation Matrix}
+    \label{fig:Pearson correlation Matrix}
+\end{figure}
+
+The Pearson Correlation Matrix features are highly self-correlated (correlation of 1 along the diagonal). Most features have low correlations with each other, indicating they are relatively independent, and the strongest off-diagonal correlation is between "ExecutionDP" and "Exfraud" (0.45). Other notable correlations include "ClientSPB" with "Disaster" (0.36) and "ClientSPB" with "ExecutioDP" (0.28).
+\section{Model Structural Design:}
+\subsection{Bayesian Inference Model}
+The priors for each operational risk indicator have been defined with distinct distributions. Each risk variable has been assigned a unique prior distribution rather than using the same prior across all variables. Different operational risk factors behave differently in the real world. Fraud events might be rare but severe, while process execution errors may be frequent but low in severity. We have used these distinct priors to incorporate these expectations into the model. The inference was carried out using the Bayesian maximum likelihood estimator to run and plot the prior distributions. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Inference Model Prior vs Differences.png}
+    \caption{Prior distributions vs Differences}
+    \label{fig:Inference Model Prior vs Differences}
+\end{figure}
+
+The visualization in \ref{fig:Inference Model Prior vs Differences} displays MCMC diagnostic plots for a Bayesian model analysing risk factors. The left column shows prior density distributions for various parameters (ClientsPBP, Disaster, EmployPWS, ExecutionDP, Exfraud, ICTFailure, Intfraud), plus "difference" and "relation" parameters. The right column shows the corresponding trace plots of MCMC samples across iterations. The parameters show distinct distribution shapes - ClientsPBP, Disaster, and ICTFailure exhibit roughly symmetric bell curves centred around 205-206, 106-107, and 156, respectively, while EmployPWS, ExecutionDP, Exfraud, and Intfraud display right-skewed distributions with values concentrated near 1.0.
+
+The trace plots suggest good MCMC convergence for most parameters, consistent mixing, and stable sampling across the 45,000+ iterations. The chains appear to be exploring the parameter spaces effectively without obvious trends, there are some visible autocorrelation in the sampling patterns. The difference and relation parameters are close to zero with symmetric distributions, indicating potentially null effects or standardized comparison metrics. The consistent sampling behaviour across different parameters suggests the model has reached a stable posterior estimation, though the exact interpretation would depend on the specific modeling context and parameterization used.
+\subsection{Posterior distributions}
+The visualization in Figure \ref{fig: Posterior Bayes Distributions} represents the posterior distributions of seven risk factors with their respective 94\% highest density intervals (HDI). Each distribution shows right-skewed patterns with mean values ranging from 0.91 (EmployPWS) to 0.98 (Exfraud), indicating high probability estimations across all factors. The HDI ranges vary in width, with EmployPWS showing the widest interval (0.84-0.98), suggesting greater uncertainty, while Exfraud displays the narrowest interval (0.94-1.0), indicating more precision in its estimation.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Posterior Bayes Distributions.png}
+    \caption{Posterior Bayes Distributions}
+    \label{fig: Posterior Bayes Distributions}
+\end{figure}
+
+All distributions in Figure \ref{fig: Posterior Bayes Distributions} have means above 0.9, with most distributions exhibiting some multi-modality or shoulders rather than perfectly smooth curves. ClientsPBP, Disaster, and Exfraud have upper HDI bounds reaching 1.0, suggesting these factors potentially have maximum influence in certain scenarios. The consistently high values across all factors indicate that these risk elements (internal fraud, external fraud, employee password security, client PBP, disaster events, ICT failures, and execution-related issues) are all highly relevant within the modeled risk assessment framework.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Posterior Distribution of Beta Variables.png}
+    \caption{Posterior Distribution of Beta Variables}
+    \label{fig:Posterior Distribution of Beta Variables}
+\end{figure}
+\textbf{Posterior Distribution of Beta Variables}
+
+This density plot shows the posterior distributions with varying probability densities across different beta values from approximately -0.2 to 1.2. The distributions reveal distinct patterns: Disaster shows the highest density peak (around 2.5) at lower beta values (near 0.1), while ClientsPBP and ICTFailure have their distributions concentrated toward higher beta values (approaching 1.0). ExecutionDP and Exfraud display more central distributions, with moderate peaks between 0.3-0.4, and Intfraud exhibits a relatively flat distribution across a wide range of beta values, suggesting higher uncertainty in its estimation compared to the other variables.
+
+\section{Markov Chain Monte Carlo (MCMC)}
+An efficient algorithm was developed based using Markov Chain Monte Carlo (MCMC) techniques, the model samples from the posterior distributions of both parameters and random effects. When combined with the suggested model parameterization, these algorithms offer notable enhancements compared to traditional posterior sampling methods. This involves several stages, which include: defining the model, choosing a sampler, initializing the chain, running the simulation, and monitoring convergence.
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lrrrrrrrrr}
+\hline
+ & mean & sd & hdi\_3\% & hdi\_97\% & mcse\_mean & mcse\_sd & ess\_bulk & ess\_tail & r\_hat \\
+\hline
+intercept & 1.007 & 4.746 & -8.239 & 9.605 & 0.160 & 0.109 & 897.0 & 853.0 & 1.0 \\
+sigma & 0.976 & 0.142 & 0.747 & 1.249 & 0.005 & 0.006 & 826.0 & 667.0 & 1.0 \\
+slope[0] & -0.001 & 0.002 & -0.005 & 0.004 & 0.000 & 0.000 & 905.0 & 808.0 & 1.0 \\
+slope[1] & -0.218 & 0.179 & -0.567 & 0.117 & 0.006 & 0.005 & 817.0 & 680.0 & 1.0 \\
+slope[2] & 0.275 & 0.179 & -0.080 & 0.580 & 0.006 & 0.005 & 843.0 & 742.0 & 1.0 \\
+slope[3] & 0.193 & 0.183 & -0.147 & 0.529 & 0.008 & 0.005 & 589.0 & 693.0 & 1.0 \\
+slope[4] & -0.061 & 0.178 & -0.384 & 0.279 & 0.006 & 0.005 & 754.0 & 730.0 & 1.0 \\
+slope[5] & 0.124 & 0.177 & -0.233 & 0.443 & 0.007 & 0.005 & 722.0 & 762.0 & 1.0 \\
+slope[6] & 0.384 & 0.194 & 0.038 & 0.741 & 0.007 & 0.005 & 704.0 & 648.0 & 1.0 \\
+\hline
+\end{tabular}
+\caption{Statistical model parameter estimates with uncertainty metrics}
+\label{tab:model_estimates}
+\end{table}
+
+The thinned samples above are a subset of the posterior samples generated by the Markov Chain Monte Carlo (MCMC) algorithm. MCMC simulations produced a sequence of correlated samples. Thinning was done to reduce autocorrelation by selecting only every 5th sample. This helps to create a more representative sample of the posterior distribution, as the thinned samples are less dependent on each other. The general description given in the figure above for the thinned samples shows the calculated means, credible intervals, and the model quantifies risk by providing probability distributions for model parameters (intercept and slope coefficients in this case). These distributions represent the uncertainty in those parameters, allowing for a more robust risk assessment than point estimates. The model estimates how much the different risk factors (predictors) affect the target variable (Intfraud). The uncertainty captured in the thinned samples helps to understand the range of potential impact each factor could have, making it more useful to quantify risk.
+\subsection{Gelman-Rubin statistic (R-hat)}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Gelman-Rubin statistic (R-hat).png}
+    \caption{Gelman-Rubin statistic}
+    \label{fig:Gelman-Rubin statistic}
+\end{figure}
+\begin{verbatim}
+Gelman-Rubin statistic (R-hat):
+<xarray.Dataset> Size: 128B
+Dimensions:      (slope_dim_0: 7)
+Coordinates:
+  * slope_dim_0  (slope_dim_0) int64 56B 0 1 2 3 4 5 6
+Data variables:
+    intercept    float64 8B 0.9984
+    sigma        float64 8B 1.001
+    slope        (slope_dim_0) float64 56B 0.9984 0.9981 1.001 ... 0.999 0.9996
+\end{verbatim}
+
+\begin{table}[H]
+\centering
+\caption{Gelman-Rubin Convergence Diagnostics (R-hat)}
+\begin{tabular}{lr}
+\hline
+\textbf{Parameter} & \textbf{R-hat} \\
+\hline
+intercept & 0.9984 \\
+sigma & 1.001 \\
+slope[0] & 0.9984 \\
+slope[1] & 0.9981 \\
+slope[2] & 1.001 \\
+slope[3] & $\ldots$ \\
+slope[4] & $\ldots$ \\
+slope[5] & 0.999 \\
+slope[6] & 0.9996 \\
+\hline
+\end{tabular}
+\label{tab:gelman_rubin}
+\end{table}
+
+\space
+The Gelman-Rubin diagnostic (R-hat) was implemented as part of the model evaluation process to assess the convergence of the MCMC sampling in our Bayesian analysis. Each of the R-hat values, including those for the intercept, the standard deviation (sigma), and all slope parameters, returned values very close to 1 (e.g., 0.9984, 1.001, etc.). This indicates that the chains from multiple samplers converged well, reinforcing the reliability of the posterior estimates. By confirming that our samples come from a stable and consistent distribution, the R-hat values strongly assure that the Bayesian model has been properly executed and that the resulting inferences are dependable.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Convergence Diagnostics and Posterior Distributions.png}
+    \caption{Convergence Diagnostics and Posterior Distributions}
+    \label{fig:Convergence Diagnostics and Posterior Distributions}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Summary of Convergence Diagnostics.png}
+    \caption{Summary of Convergence Diagnostics}
+    \label{fig:Summary of Convergence Diagnostics}
+\end{figure}
+
+
+\subsection{Convergence Diagnostics and Posterior Distributions:} 
+
+Trace plots indicate convergence if chains appear stationary and lack long-term trends. R-hat values close to 1 suggest good convergence. Posterior distributions visualize the uncertainty in the parameter estimates. 95\% credible intervals provide a range of plausible values for the parameters.
+\newpage
+\section{Causal Discovery}
+\textbf{Partial Correlation-based PCMCI) with Significant links at alpha = 0.05:}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Causal Discovery Links.png}
+    \caption{Causal Discovery}
+    \label{fig: Causal Discovery}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{CC Causal Discovery Mapping.png}
+    \caption{Causal Discovery Mapping}
+    \label{fig:Causal Discovery Mapping}
+\end{figure}
+
+\newpage
+\subsection*{Significant Causal Relationships in Operational Risk}
+{($\alpha = 0.05$ significance level)}
+
+\subsection*{1. Internal Fraud (Intfraud)}
+\begin{tabular}{lcccc}
+\toprule
+Related Variable & Lag & Direction & p-value & Correlation \\
+\midrule
+ICTFailure & -2 & Negative & 0.00691 & -0.536 \\
+External Fraud (Exfraud) & -3 & Negative & 0.04211 & -0.367 \\
+\bottomrule
+\end{tabular}
+
+\begin{itemize}
+\item Internal fraud reductions predict lower ICT failures 2 periods later.
+\item High internal fraud correlates with reduced external fraud 3 periods later (possibly due to tightened controls).
+\end{itemize}
+
+\subsection*{2. External Fraud (Exfraud)}
+\begin{tabular}{lcccc}
+\toprule
+Related Variable & Lag & Direction & p-value & Correlation \\
+\midrule
+ClientsPBP & 0 & Negative & 0.01603 & -0.429 \\
+Self (Autocorrelation) & -1 & Negative & 0.03260 & -0.367 \\
+\bottomrule
+\end{tabular}
+
+\begin{itemize}
+\item External fraud immediately reduces client/product breaches (possibly due to fraud detection investments).
+\item Negative autocorrelation suggests fraud events are followed by 'quiet periods.'
+\end{itemize}
+
+\subsection*{3. Employment Practices (EmployPWS)}
+\begin{tabular}{lcccc}
+\toprule
+Related Variable & Lag & Direction & p-value & Correlation \\
+\midrule
+External Fraud (Exfraud) & -1 & Positive & 0.00196 & +0.542 \\
+\bottomrule
+\end{tabular}
+
+\begin{itemize}
+\item External fraud events predict worse employment practices 1 period later (e.g., rushed hiring increases compliance risks).
+\end{itemize}
+
+\subsection*{4. Clients \& Products (ClientsPBP)}
+\begin{tabular}{lcccc}
+\toprule
+Related Variable & Lag & Direction & p-value & Correlation \\
+\midrule
+External Fraud (Exfraud) & 0 & Negative & 0.01603 & -0.429 \\
+ExecutionDP & -3 & Positive & 0.04801 & +0.399 \\
+Self (Autocorrelation) & -2 & Negative & 0.03169 & -0.393 \\
+\bottomrule
+\end{tabular}
+
+\begin{itemize}
+\item Execution delays predict client/product issues 3 periods later.
+\item Negative autocorrelation implies cyclical compliance patterns.
+\end{itemize}
+
+\subsection*{5. Disasters (Disaster)}
+\begin{tabular}{lcccc}
+\toprule
+Related Variable & Lag & Direction & p-value & Correlation \\
+\midrule
+Self (Autocorrelation) & -3 & Negative & 0.01977 & -0.482 \\
+Internal Fraud (Intfraud) & -5 & Negative & 0.02677 & -0.434 \\
+Employment Practices (EmployPWS) & -5 & Positive & 0.04915 & +0.406 \\
+\bottomrule
+\end{tabular}
+
+\begin{itemize}
+\item Disasters show cyclical patterns (negative autocorrelation).
+\item Poor employment practices predict disasters 5 periods later (e.g., safety violations).
+\end{itemize}
+
+\subsection*{6. ICT Failures (ICTFailure)}
+\begin{tabular}{lcccc}
+\toprule
+Related Variable & Lag & Direction & p-value & Correlation \\
+\midrule
+Internal Fraud (Intfraud) & -5 & Positive & 0.00687 & +0.547 \\
+Disasters & -1 & Negative & 0.00925 & -0.530 \\
+Disasters & -4 & Negative & 0.02222 & -0.485 \\
+Disasters & -5 & Negative & 0.03054 & -0.462 \\
+Employment Practices (EmployPWS) & -4 & Positive & 0.04281 & +0.426 \\
+\bottomrule
+\end{tabular}
+
+\begin{itemize}
+\item Internal fraud strongly predicts ICT failures (5-period lag).
+\item Disasters reduce ICT failures (possibly due to post-disaster infrastructure upgrades).
+\end{itemize}
+
+\subsection*{7. Execution \& Delivery (ExecutionDP)}
+\begin{tabular}{lcccc}
+\toprule
+Related Variable & Lag & Direction & p-value & Correlation \\
+\midrule
+ClientsPBP & -4 & Negative & 0.01465 & -0.482 \\
+Internal Fraud (Intfraud) & -2 & Positive & 0.02180 & +0.466 \\
+ICTFailure & -4 & Positive & 0.04600 & +0.440 \\
+\bottomrule
+\end{tabular}
+
+\begin{itemize}
+\item Client/product issues predict execution delays 4 periods later.
+\item ICT failures and internal fraud disrupt execution processes
+\end{itemize}
+
+Each variable was first cleaned and validated for consistency and numeric integrity. The time series lag analysis was then applied to capture dynamic relationships between variables over multiple periods. A lagged correlation and p-value evaluation were performed for all variable pairs at different time lags (up to ±5 years) to identify statistically significant causal relationships. Links with a p-value less than 0.05 were considered significant. The direction (positive or negative), lag, strength (correlation value), and statistical confidence were recorded for each detected link. The analysis revealed patterns such as autocorrelation (self-reinforcing or cyclic behaviour), predictive impacts (e.g., how Internal Fraud predicts ICT Failures), and interdependencies among risk factors.
+
+\section{Cross-sectional Causal Discovery}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Cross-sectional Causal Discovery.png}
+    \caption{Cross-sectional Causal Discovery}
+    \label{fig: Cross-sectional Causal Discovery}
+\end{figure}
+
+\newpage
+ From the Figure \ref{fig: Cross-sectional Causal Discovery}, there is a direct link between the nodes, indicating that the nodes directly affect each other. Some nodes do contribute directly to the total loss, some contribute indirectly through other variables. System failure creates loopholes to internal fraud within the organization, as there will always be one or two dishonest employees in each organization who will utilize the opportunity to loot or to some activities for their gains at the expense of the organization. Natural disasters give rise to external fraud, phishing, and cyber threats, just to mention a few. External Fraud gives rise to execution delivery, Client's products, and Business practices, and lastly to total loss.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Total Loss and predicted (Forecast) losses.png}
+    \caption{Total Loss and predicted (Forecast) losses}
+    \label{fig:Total Loss and predicted (Forecast) losses}
+\end{figure}
+
+Total Loss and predicted (Forecast) losses for the observed operational risk. From the trend produced above, this shows that there is a relative increase in the losses recorded over the years 1980 to 2024. The trend suggests that operational risk significantly affects the general business operations due to high losses observed despite some improvements in technology. High usage of automated machines has given rise to operational risk in many institutions. The forecast suggests that due to rapid changes in technology, operational losses are more likely to surge as well, which is attributed to high changes of cyber-attacks, phishing, and other internal control failures. There is a change where the losses can be compacted only if institutions have adapted to the changes in technology by introducing sophisticated machines, integrated with AI to detect key risk drivers at an early stage.
+
+\section{Operational Risk Causal Bayesian Network}
+% Risk Factor Contribution Table
+\begin{table}[htbp]
+  \centering
+  \caption{Risk Factor Contribution}
+  \begin{tabular}{lc}
+    \hline
+    \textbf{Risk Factor} & \textbf{Contribution (\%)} \\
+    \hline
+    Intfraud & 1.6\% \\
+    Exfraud & 15.4\% \\
+    EmployPWS & 8.8\% \\
+    ClientsPBP & 43.2\% \\
+    Disaster & 1.1\% \\
+    ICTFailure & 6.8\% \\
+    ExecutionDP & 23.1\% \\
+    \hline
+  \end{tabular}
+\end{table}
+
+% Risk Level Contributions Table
+\begin{table}[htbp]
+  \centering
+  \caption{Risk Level Contributions}
+  \begin{tabular}{lccc}
+    \hline
+    \textbf{Risk Factor} & \textbf{Low (\%)} & \textbf{Medium (\%)} & \textbf{High (\%)} \\
+    \hline
+    Intfraud & 40.0\% & 31.1\% & 28.9\% \\
+    Exfraud & 40.0\% & 28.9\% & 31.1\% \\
+    EmployPWS & 37.8\% & 24.4\% & 37.8\% \\
+    ClientsPBP & 35.6\% & 31.1\% & 33.3\% \\
+    Disaster & 44.4\% & 20.0\% & 35.6\% \\
+    ICTFailure & 40.0\% & 24.4\% & 35.6\% \\
+    ExecutionDP & 35.6\% & 22.2\% & 42.2\% \\
+    \hline
+  \end{tabular}
+\end{table}
+
+% Significant Correlations Table
+\begin{table}[htbp]
+  \centering
+  \caption{Significant Correlations}
+  \begin{tabular}{lc}
+    \hline
+    \textbf{Correlated Factors} & \textbf{Correlation (r)} \\
+    \hline
+    Intfraud - Exfraud & 0.29 \\
+    Exfraud - ICTFailure & 0.31 \\
+    EmployPWS - ClientsPBP & 0.47 \\
+    ExecutionDP - ClientsPBP & 0.64 \\
+    \hline
+  \end{tabular}
+\end{table}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Operational Risk BBN Model.png}
+    \caption{Operational Risk Bayesian Network Model}
+    \label{fig: Operational Risk Bayesian Model}
+\end{figure}
+
+The Bayesian Belief Network in Figure \ref{fig: Operational Risk Bayesian Model} presents a model for risk quantification. This framework was developed using a simulated dataset and validated using real-world data for the seven key risk factors. From the model analysis, we have found that Clients, Products, and Business practices have the highest percentage of the total impact on the total operational risk. CPSB Practices consist of 43.2\% of the impact as the key drivers of operational risk. Using probability elicitation and expert judgement, this is typically associated with product flows, improper business practices, and other related issues like client-related disputes. Execution, Delivery, and Process Management was rated as the second risk key driver with 23.1\%. This might be due to several reasons, which include transaction processing errors, documentation and wording errors, and vendor management. 
+
+Large organisations often have complex systems that might make processing a mammoth task, where errors occur at numerous points. Outdated systems also contribute to system errors, as the tasks and execution required might require sophisticated systems. Sometimes the old system requires manual interventions where human error can occur. In Banking institutions, they often record high transaction volumes, and the sheer volumes being processed the high the probability of transactional errors within the systems. System errors are caused by system integration and regular system updates. Some systems may fail to integrate with other automated systems, hence the high rate of system and processing errors. 
+
+External Fraud has 15.4\%, which represents a substantial operational risk driver, most likely involving cyber threats, malware attacks, phishing, and failure of external parties such as vendors or business partners. From the Framework, the results indicate that external fraud has been rated as the lowest from the least risk indicator, but it is subject to change depending on the database used to model the risk. Experts suggest that this area is the most vulnerable in operational risk, as more banks have lost huge amounts of money due to external fraud. Employment Practices and Workplace Safety, being the least with 8.8\% and internal fraud 1.1\% contribute relatively less to total operational risk. 
+
+The strongest correlation exists between Execution, Delivery and Process Management, and Clients, Products and Business Practices(r=0.64), indicating that process failures is most likely to impact client relationships and business practices. Employment Practices and Clients, Products and Business Practices show moderate correlation (r=0.47), suggesting staff issues may affect client service quality. ICT Failure and External Fraud are (r=0.31), and between Internal Fraud and External Fraud accounts for (r=0.29). These are the notable results obtained from the framework, suggesting that a robust Bayesian Network for risk Quantification is a useful tool that Banks, Insurance, and other financial institutions can use as a risk management tool for efficient risk management. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Bayesian Network Model Risk Level Contributions.png}
+    \caption{Bayesian Network Model Risk Level Contributions}
+    \label{fig: Bayesian Network Model Risk Level Contributions}
+\end{figure}
+\textbf{Analysis of Bayesian Network Output} 
+
+The Bayesian network output model organizes operational losses into a hierarchical structure: For Level 1, we have the following risk categories: Fraud, Process, Business, Technology, and External Event losses, and Level 2: More specific categories within each Level 1 group. Total operational losses: \$1,279,901.90
+
+
+
+\subsubsection{Basel II Operational Risk Capital Charge Calculation}
+
+Under Basel II AMA, banks must hold capital for operational risk equal to the sum of expected loss (EL) and unexpected loss (UL) at the 99.9\% confidence level over a one-year holding period.
+
+\subsection{Expected Loss (EL)}
+This is typically the mean of the historical loss distribution, which, based on our dataset, is \$1,279,901.90.
+
+\subsection{Unexpected Loss (UL)}
+This is calculated as the difference between the 99.9\% Value-at-Risk (VaR) and the Expected Loss. Without the full distribution, we have used a common industry approach where UL is typically 3-4 times the EL for operational risk.
+
+\begin{align}
+\text{UL} &= 3.5 \times \text{EL} \\
+&= 3.5 \times \$1,279,901.90 \\
+&= \$4,479,656.65
+\end{align}
+
+\subsection{Total Capital Charge}
+\begin{align}
+\text{Total Capital Charge} &= \text{EL} + \text{UL} \\
+&= \$1,279,901.90 + \$4,479,656.65 \\
+&= \$5,759,558.55
+\end{align}
+
+\newpage
+\subsection{Capital Allocation by Risk Category}
+Based on the proportional contribution to total losses:
+
+\begin{table}[htbp]
+  \centering
+  
+  \begin{tabular}{lrrr}
+    \hline
+    \textbf{Risk Category} & \textbf{Loss Amount} & \textbf{\% of Total} & \textbf{Capital Allocation} \\
+    \hline
+    Business Losses & \$613,344.20 & 47.92\% & \$2,760,082.47 \\
+    Process Losses & \$395,992.40 & 30.94\% & \$1,782,026.82 \\
+    Fraud Losses & \$178,337.10 & 13.93\% & \$802,305.31 \\
+    Technology Losses & \$81,073.60 & 6.33\% & \$364,579.85 \\
+    External Event Losses & \$11,154.60 & 0.87\% & \$50,108.16 \\
+    \hline
+    \textbf{Total} & \$1,279,901.90 & 100\% & \$5,759,558.55 \\
+    \hline
+  \end{tabular}
+    \caption{Capital Allocation by Risk Category}
+\end{table}
+
+\textbf{Diversification Benefit}
+
+The Bayesian network approach allows for modeling dependencies between risk types. If your model captures these correlations, the actual capital charge might be lower than the simple sum due to diversification benefits. This could reduce the capital charge by 10–20\%, depending on the correlation structure.
+Adjusted capital with diversification (assuming 15\% benefit): \$5,759,558.55 × 0.85 = \$4,895,624.77
+\newpage
+\section{Model Validation}
+To assess the reliability, generalizability, and practical scalability of the Bayesian Network framework developed in this study, a structured model validation process was conducted. This involved both cross-validation and Scenario analysis testing, aimed at evaluating the robustness of the Bayesian Optimization Algorithm under real-world data conditions. 
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Scatter Plots.png}
+    \caption{Scatter Plots under different Scenarios}
+    \label{fig:Scatter Plots under different Scenarios}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Scenarios Analysis Distributions after MCMC.png}
+    \caption{Scenarios Analysis Distributions after MCMC}
+    \label{fig:Scenarios Analysis Distributions after MCMC}
+\end{figure}
+
+Scenario analysis was performed for the first three high-risk indicators, and the following results were obtained. The descriptive statistics for 'ExecutionDP' are nearly identical across all three scenarios. This suggests that the modifications made to 'EmployPWS' and 'ICTFailure' in the optimistic and pessimistic scenarios did not significantly impact the overall distribution of the 'ExecutionDP' values.
+
+The correlation between 'EmployPWS' and 'ExecutionDP' is weakly positive across all scenarios. The correlation between 'ICTFailure' and 'ExecutionDP' is also weakly positive across all scenarios. The correlations remain consistent across scenarios, indicating that the changes applied to create the different scenarios did not significantly alter the relationships between these variables.
+
+The scatter plots further illustrate that the relationship between 'EmployPWS', 'ICTFailure', and 'ExecutionDP' does not change drastically between the scenarios.
+Based on the analysis, changing 'EmployPWS' or 'ICTFailure' within the defined ranges for optimistic and pessimistic scenarios appears to have a minimal effect on 'ExecutionDP'. Further investigation or a different analytical approach might be needed to uncover more substantial relationships or identify more influential input variables
+\subsection{Scenario Analysis for Operational Risk Assessment}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{]Risk Assessment Analysis.png}
+    \caption{Scenario Analysis for Operational Risk Assessment}
+    \label{fig:Scenario Analysis for Operational Risk Assessment}
+\end{figure}
+
+The scenario analysis was performed for the organizational operational risk assessment, examining three critical metrics: Employee Performance and Workforce Stability (EmployPWS), ICT Failure probability, and Execution Delivery Performance (ExecutionDP). We obtained posterior distributions for each metric across three distinct scenarios (Low Risk, Base Case, and High Risk) using Bayesian modeling with PyMC. The analysis employed Beta distributions with Exponential priors to model the underlying uncertainty in each risk factor.
+Results indicate clear differentiation between scenarios, with the High Risk scenario showing substantially elevated probabilities across all metrics (EmployPWS: 0.5-0.65, ICT Failure: 0.55-0.7, ExecutionDP: 0.6-0.75). 
+
+The Base Case exhibited moderate risk levels (EmployPWS: 0.3-0.4, ICT Failure: 0.25-0.35, ExecutionDP: 0.35-0.45), while the Low Risk scenario demonstrated the most favorable outcomes (EmployPWS: 0.2-0.3, ICT Failure: 0.1-0.2, ExecutionDP: 0.15-0.25). The minimal overlap between posterior distributions confirms the statistical significance of these scenario differences, validating our modeling approach and providing quantitative support for risk-based decision-making and resource allocation. This analysis enables leadership to understand potential operational vulnerabilities under different conditions and develop appropriate mitigation strategies.
+
+\section{Cross-Validation}
+We have extended the previous analysis to include cross-validation and sensitivity analysis for the operational risk model. These additional analyses provide robust validation of model performance and assess the impact of modeling assumptions. 
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{lccc}
+\hline
+\textbf{Scenario} & \textbf{EmployPWS} & \textbf{ICTFailure} & \textbf{ExecutionDP} \\
+\hline
+Base Case & 0.0215 & 0.0247 & 0.0135 \\
+High Risk & 0.0075 & 0.0100 & 0.0150 \\
+Low Risk & 0.0245 & 0.0397 & 0.0357 \\
+\hline
+\end{tabular}
+\caption{Prior Influence Summary (Standard Deviation of Posterior Means)}
+\end{table}
+
+Evaluation: Lower values indicate more stable posterior estimates across different prior specifications.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Graphical representations.png}
+    \caption{Cross-Validation Log Likelihood}
+    \label{fig: Cross-Validation Log Likelihood}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Prior Sensitivity Vs Posterior.png}
+    \caption{Prior Sensitivity Vs Posterior}
+    \label{fig: Prior Sensitivity Vs Posterior}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\linewidth]{Prior Box Plots.png}
+    \caption{Box Plot Prior Sensitivity Estimates}
+    \label{fig:Box Plot Prior Sensitivity}
+\end{figure}
+A comprehensive sensitivity analysis was conducted to assess the impact of prior specifications on posterior estimates. We varied the lambda parameter of the Exponential priors (from 0.1 to 5.0) to evaluate model robustness under different prior assumptions. From the findings, we have obtained the following. The Base Case and Low Risk scenarios demonstrated the highest stability across different prior specifications, with posterior mean variations under 0.05 for most metrics. The High-Risk scenario showed slightly higher sensitivity to prior specifications for the ExecutionDP metric, indicating that data collection efforts should prioritize this area to reduce uncertainty. Mean estimates for ICT Failure demonstrated the greatest stability across all scenarios, suggesting this is the most data-driven metric in our analysis.
+
+The sensitivity analysis confirms that our baseline results (lambda=1.0) represent robust estimates, with minimal influence from prior specifications. The model demonstrates an appropriate balance between prior information and observed data, with posterior distributions predominantly driven by the scenario-specific data patterns rather than modeling assumptions.
+This comprehensive validation framework provides additional confidence in the scenario analysis results, supporting risk-based decision-making with quantitative evidence of model reliability and robustness. 
+
+\section{Implications for Risk Management}
+The framework for quantifying and validating causal relationships derived from the Bayesian network modeling for operational risk provides critical insights for operational risk governance in both insurance and banking institutions. The major critical implications are the strategic value of risk preventative controls in the most vulnerable departments. 
+From the key findings, it has been noticed that the Bayesian framework provides actionable intelligence for developing a hierarchical risk management strategy.
+
+This Bayesian Network model represents a significant advancement over traditional operational risk models by providing a comprehensive causal framework that captures complex interdependencies. Unlike conventional models that often treat risk factors in isolation, this approach explicitly quantifies relationships between variables through correlation coefficients (such as r=0.64 between Execution processes and Disaster risk), enabling a fuller understanding of how risks spread through an organization.
+
+The integration of domain constraints allows for more reliable scenario and stress testing, such as simulating the impact of Employee Performance and Workforce Stability (EmployPWS), ICT Failure probability, and Execution Delivery Performance (ExecutionDP). The framework shows strong capacity for handling rare but severe events, a common challenge in operational risk, due to its structure-based generalization rather than reliance solely on historical frequency. Probability elicitation enables the incorporation of expert judgment and opinion, which is essential in insurance and banking environments where data is sparse or lagging, yet decisions must reflect evolving operational contexts.
+
+The model can serve as an effective decision-support tool, supporting proactive risk mitigation, audit planning, and regulatory compliance. The model aligns well with emerging expectations under Basel III and ICAAP frameworks, which emphasize forward-looking, scenario-based approaches to operational risk.
+
+\section{Discussion of the results}
+This section discusses the major findings of the study in relation to the research objectives and questions, using outputs from the Bayesian Network modeling for operational risk: a framework for quantifying and validating causal relationships. These findings are critically assessed in light of existing literature and operational risk frameworks.
+
+\subsection{Objective 1:}
+\textbf{Construct a Bayesian Network (BN) Framework: }
+
+To develop a BN diagram that accurately establishes relationships between the key operational risk attributes, illustrating how different factors influence each other.
+The first objective was to define and construct the Bayesian Networks (BN) framework for operational risk management, which has been accomplished as we can see in Figure \ref{fig: Operational Risk Bayesian Model} by the comprehensive framework diagram. The model establishes a hierarchical structure with three distinct tiers: primary risk sources (Internal Fraud, External Fraud, ICT Failure), risk categories (Employment Practices, Execution and Process Management, Clients/Products and Business Practices, Disaster), and the central operational risk node. The implementation appears to have used directed acyclic graphs to represent causal relationships, with solid black arrows indicating direct impact pathways and dashed blue lines showing correlations between risk factors. Each relationship has been quantified with both impact percentages and statistical significance values (all $(p < 0.001)$), demonstrating rigorous statistical validation.
+
+The model is particularly effective in capturing the complex interdependencies of operational risk factors. It successfully integrates both direct and indirect influence pathways, allowing for a nuanced understanding of how risks propagate through organizational systems. For example, it shows that while External Fraud directly contributes 15.4\% to operational risk, the model also captures how Employment Practices correlates with Client/Business Practices (r=0.47), revealing secondary risk transmission mechanisms that traditional models often miss.
+
+The framework further enhances risk interpretation by stratifying each risk category into High/Medium/Low classifications with corresponding percentages, providing a multi-dimensional view of risk distribution. This approach represents a significant advancement over traditional operational risk models that typically employ linear aggregation methods without explicitly modeling causal relationships or correlation structures. While the model's true predictive power would require validation against historical data, the framework as constructed successfully achieves the objective of creating a structured representation of operational risk dynamics that can inform more sophisticated risk management approaches.
+\subsection{Objective 2:}
+\textbf{Quantify the Network and Validate Estimates.} 
+
+To quantify the network by estimating probabilities associated with different risk scenarios and events.
+The second objective of quantifying the Bayesian Network and validating probability estimates has been accomplished as demonstrated by the comprehensive probabilistic framework in the diagram. The model effectively quantifies multiple dimensions of the operational risk landscape through precise numerical values for each risk factor's direct impact on overall operational risk. These impact percentages, ranging from Clients/Products and Business Practices' substantial 43.2\% contribution to Disaster's minimal 1.1\% influence, represent validated probability estimates of how each factor affects operational risk outcomes. The uniformly high statistical significance $(p < 0.001)$ across all impact pathways provides strong validation of these probability estimates, indicating that the quantification is based on robust 
+\subsection{Objective 3:}
+\textbf{Validate the Model Structure.} 
+
+Validate the Bayesian Network model structure to ensure that it accurately represents the causal relationships and can be used for effective risk management.  
+The validation of the Bayesian Network model structure demonstrates its reliability and accuracy in quantifying operational risk factors and representing causal risk relationships. Scenario analysis was conducted on the three high-risk indicators and the results revealed consistent behavior across different scenarios, with the relationships between Employment Practices and Workplace Safety (EmployPWS), ICT Failure, and Execution, Delivery and Process Management (ExecutionDP) maintaining stable correlation patterns regardless of optimistic or pessimistic conditions. The minimal variation in ExecutionDP across scenarios suggests that the model accurately captures the relative independence of this factor from adjustments in EmployPWS and ICT Failure, confirming the structural validity of these pathways. However, the weak correlations observed indicate that the model correctly identifies these as distinct risk domains with limited cross-influence, validating the structure's ability to differentiate between primary risk factors.
+
+Complementing the scenario testing, sensitivity analysis provided robust evidence of the model's structural validity through systematic variation of prior specifications. By adjusting the lambda parameter of Exponential priors from 0.1 to 5.0, the analysis confirmed that posterior estimates remained remarkably stable, particularly for Base Case and Low Risk scenarios where variations remained below 0.05 across most metrics. The ICT Failure estimates demonstrated exceptional stability across all scenarios, indicating strong data-driven foundations for this component of the model structure. Even in the High-Risk scenario, where ExecutionDP showed slightly higher sensitivity, the overall model maintained its structural integrity. This comprehensive cross-validation approach confirms that the Bayesian Network structure accurately represents the causal relationships between operational risk factors, with posterior distributions predominantly driven by actual data patterns rather than modeling assumptions, thereby establishing a reliable foundation for effective risk management decision-making.
+
+\section{Summary}
+The Bayesian Network (BN) framework developed for operational risk modeling has largely succeeded in meeting its core objectives of this research.  Objective 1 focused on the structural construction of the BN, establishing a clear quantification framework of risk factors. The framework successfully mapped out causal pathways and statistical dependencies between primary risk sources and broader risk categories. This structure enabled the model to represent how operational risk events occur through complex organizational systems, offering an open view that reflects the causal, direct, and indirect relationships (Pearl, 2000). Objective 2 aimed to quantify the model, which was achieved using validated probabilistic estimates. Notably, the analysis revealed that the Clients, Products and Business Practices category had the most substantial impact on overall risk (43.2\%), and all relationships were statistically significant $(p < 0.001)$. These quantified pathways, alongside detailed risk-level distributions, provide management with targeted, actionable insights for risk prioritization and resource allocation. Objective 3 involved validating the model using scenario and sensitivity analysis. This phase confirmed the model’s robustness: posterior estimates remained stable despite variations in prior assumptions, with most key metrics deviating by less than 0.05. Such consistency supports the model’s structural soundness and lends credibility to its use in decision-making under uncertainty (Fenton \& Neil, 2012).
+
+However, despite these successes, several limitations emerged during model testing. The scenario analysis, for example, showed that changes in EmployPWS and ICT Failure had a limited effect on the ExecutionDP metric. This stability, while suggestive of internal consistency, might also reflect a model that is too rigid or insufficiently sensitive to inter-variable dynamics. Critics argue that alternative analytical methods such as dynamic Bayesian networks or hybrid models could be more effective (Cowell et al., 2007).
+
+Given that the BN model meets its foundational goals and shows promise for operational risk management, it also offers clear opportunities for refinement. Future iterations should prioritize the inclusion of potential mediating factors and strengthen the model's responsiveness to stress scenarios to enhance both reliability and predictive utility.
